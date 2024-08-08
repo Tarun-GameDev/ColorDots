@@ -137,6 +137,8 @@ MonoBehaviour:
   checkPoints:
   - {fileID: 0}
   reachedCheckPointNo: 0
+  UNDOcheckPointNo: 0
+  startPoint: {fileID: 0}
   allEndPoint: []
   BlockExplodeParticle: {fileID: 5279937787338258854, guid: dedfe05a0dfebfd47a05fb33464ecdf0, type: 3}
   target: {fileID: 0}
@@ -144,6 +146,8 @@ MonoBehaviour:
   move: 0
   playerType: 0
   EndColor: {r: 0.8784314, g: 0.73333335, b: 0.19607843, a: 1}
+  eraseAnimObj: {fileID: 30561366682576596, guid: 0ecdb94a3f963ea42a4976c6cde72dbf, type: 3}
+  lightiningEffect: {fileID: 2880459315861017975, guid: c6e18333e36e5b0448384f04a140b4be, type: 3}
 --- !u!50 &8973043258237663376
 Rigidbody2D:
   serializedVersion: 4

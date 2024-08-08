@@ -44,6 +44,42 @@ public class LevelManager : MonoBehaviour
     #endregion
 
 
+    #region Erase Feature
+    public void ActivateErase()
+    {
+        foreach(Player _player in allPlayers)
+        {
+            _player.EraseOn();
+        }
+    }
+
+    public void DeactivateErase()
+    {
+        foreach (Player _player in allPlayers)
+        {
+            _player.EraseOff();
+        }
+    }
+    #endregion
+
+    #region Phantom Feature
+    public void ActivatePhantom()
+    {
+        foreach (Player _player in allPlayers)
+        {
+            _player.PhantomOn();
+        }
+    }
+
+    public void DeactivatePhantom()
+    {
+        foreach (Player _player in allPlayers)
+        {
+            _player.PhantomOff();
+        }
+    }
+    #endregion
+
     #region Game Finish Mechanism
     public void PlayerCheckPointReached()
     {
@@ -59,5 +95,4 @@ public class LevelManager : MonoBehaviour
         }
     }
     #endregion
-
 }

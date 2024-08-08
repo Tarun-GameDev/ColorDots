@@ -37,17 +37,27 @@ public class UiManager : MonoBehaviour
 
     [Header("LevelNo")]
     [SerializeField] TextMeshProUGUI levelNoText;
-    [SerializeField] TextMeshProUGUI levelNoText01;
+    [SerializeField] TextMeshProUGUI[] levelNoTextwithName;
 
     [Header("PowerUp")]
     [SerializeField] int undoCount = 1;
     [SerializeField] GameObject undoHeadObj;
     [SerializeField] TextMeshProUGUI undoCountText;
+    [SerializeField] int eraseCount = 0;
+    [SerializeField] GameObject eraseHeadObj;
+    [SerializeField] TextMeshProUGUI eraseCountText;
+    [SerializeField] int phantomCount = 0;
+    [SerializeField] GameObject phantomHeadOBj;
+    [SerializeField] TextMeshProUGUI phantomCountText;
 
 
     [Header("MainMenu")]
     [SerializeField] bool mainMenu = false;
     [SerializeField] int selectedLevel = 1;
+
+    [Header("Level Nos Buttons")]
+    [SerializeField]int currentLevel = 1;
+    [SerializeField] TextMeshProUGUI[] levelNoTexts;
     
 
     private void Awake()
@@ -95,15 +105,30 @@ public class UiManager : MonoBehaviour
         }
 
 
-
-
         if(levelNoText != null)
-            levelNoText.text = "LEVEL " + SceneManager.GetActiveScene().buildIndex.ToString();
-        if (levelNoText01 != null)
-            levelNoText01.text = "LEVEL " + SceneManager.GetActiveScene().buildIndex.ToString();
+            levelNoText.text = SceneManager.GetActiveScene().buildIndex.ToString();
+
+        foreach (TextMeshProUGUI _text in levelNoTextwithName)
+        {
+            _text.text = "LEVEL " + SceneManager.GetActiveScene().buildIndex.ToString();
+        }
 
         if(undoCountText != null)
             undoCountText.text = undoCount.ToString();
+        if (eraseCountText != null)
+            eraseCountText.text = eraseCount.ToString();
+        if (phantomCountText != null)
+            phantomCountText.text = phantomCount.ToString();
+
+        currentLevel = PlayerPrefs.GetInt("CurrentLevel", 1);
+        if(levelNoTexts.Length > 0)
+        {
+            for (int i = 0; i < levelNoTexts.Length; i++)
+            {
+                levelNoTexts[i].text = (i + currentLevel).ToString();
+            }
+        }
+
     }
 
     private void Update()
@@ -136,6 +161,8 @@ public class UiManager : MonoBehaviour
 
     public void LevelComplete()
     {
+        currentLevel++;
+        PlayerPrefs.SetInt("CurrentLevel", currentLevel);
         if (CheersParticleEff != null)
             CheersParticleEff.Play();
         if(playingMenu!= null)
@@ -144,6 +171,7 @@ public class UiManager : MonoBehaviour
             levelCompleteMenu.SetActive(true);
         if (SettingsMenu != null)
             SettingsMenu.SetActive(false);
+
     }
 
     public void LevelFailed()
@@ -166,7 +194,19 @@ public class UiManager : MonoBehaviour
         PlayHaptic();
         if (LifeManager.instance != null)
             PlayerPrefs.SetFloat("LifeRegenTimer", LifeManager.instance.timer);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (SceneExists(SceneManager.GetActiveScene().buildIndex + 1))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else
+            Debug.Log("There are no more levels");
+
+    }
+
+    bool SceneExists(int buildIndex)
+    {
+        string scenePath = SceneUtility.GetScenePathByBuildIndex(buildIndex);
+        return !string.IsNullOrEmpty(scenePath);
     }
 
     public void Restart()
@@ -199,7 +239,7 @@ public class UiManager : MonoBehaviour
             PlayerPrefs.SetFloat("LifeRegenTimer", LifeManager.instance.timer);
         if (LifeManager.instance != null)
             if (LifeManager.instance.currentLives > 0)
-                SceneManager.LoadScene(selectedLevel);
+                SceneManager.LoadScene(currentLevel);
             else
                 if (NoLivesMenu != null)
                 NoLivesMenu.SetActive(true);
@@ -265,6 +305,67 @@ public class UiManager : MonoBehaviour
     }
     #endregion
 
+    #region Erase PowerUp
+    public void ActivateErasePowerUp()
+    {
+        PlayHaptic();
+        if(eraseCount > 0)
+        {
+            if (playingMenu != null)
+                playingMenu.SetActive(false);
+            eraseHeadObj.SetActive(true);
+            if (LevelManager.instance != null)
+                LevelManager.instance.ActivateErase();
+        }
+    }
+
+    public void DeactivateErasePowerUp()
+    {
+        PlayHaptic();
+        if (playingMenu != null)
+            playingMenu.SetActive(true);
+        eraseHeadObj.SetActive(false);
+        if (LevelManager.instance != null)
+            LevelManager.instance.DeactivateErase();
+    }
+
+    public void updateEraseCount(int _decrement)
+    {
+        eraseCount -= _decrement;
+        eraseCountText.text = eraseCount.ToString();
+    }
+    #endregion
+
+    #region Phantom PowerUp
+    public void ActivatePhantom()
+    {
+        PlayHaptic();
+        if (phantomCount > 0)
+        {
+            if (playingMenu != null)
+                playingMenu.SetActive(false);
+            phantomHeadOBj.SetActive(true);
+            if (LevelManager.instance != null)
+                LevelManager.instance.ActivatePhantom();
+        }
+    }
+
+    public void DeactivatePhantom()
+    {
+        PlayHaptic();
+        if (playingMenu != null)
+            playingMenu.SetActive(true);
+        phantomHeadOBj.SetActive(false);
+        if (LevelManager.instance != null)
+            LevelManager.instance.DeactivatePhantom();
+    }
+
+    public void UpdatePhantomCount(int _decrement)
+    {
+        phantomCount -= _decrement;
+        phantomCountText.text = phantomCount.ToString();
+    }
+    #endregion
 
 
     public void EnableDarkMode(bool _enable)

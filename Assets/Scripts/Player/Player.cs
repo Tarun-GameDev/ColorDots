@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.XR;
+using DG.Tweening;
+using static UnityEngine.ParticleSystem;
 
 public class Player : MonoBehaviour
 {
@@ -22,15 +24,27 @@ public class Player : MonoBehaviour
     bool failed = false;
 
 
+    bool inUndoMode = false;
     bool canCollide = true;
     bool canUNDO = false;
+    bool inEraseMode = false;
+    bool inPhaontomMode = false;
+    bool usingPhantom = false;
     bool inputWork = true;
+    SpriteRenderer spriteRenderer;
+    [SerializeField] GameObject eraseAnimObj;
+    Collider2D collider2d;
+    [SerializeField] GameObject lightiningEffect;
+    GameObject lightingRef;
+    [SerializeField] ParticleSystem[] allPartEff;
 
     private void Start()
     {
         startPoint.transform.position = transform.position;
-        startColor = gameObject.GetComponent<SpriteRenderer>().color;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        startColor = spriteRenderer.color;
         UNDOcheckPointNo = checkPoints.Length;
+        collider2d = GetComponent<Collider2D>();
     }
 
     void Update()
@@ -56,16 +70,27 @@ public class Player : MonoBehaviour
         }
     }
 
+    #region Input
+
     private void OnMouseDown()
     {
-        if(inputWork && !failed)
+        if (inputWork && !failed)
         {
+            //Normal Movement
             if (canCollide)
             {
                 if (!canUNDO)
                     CheckForNewCheckPoint();
+
+                if (inPhaontomMode && !canUNDO) //Phantom Mode ON
+                {
+                    EnablePhantomEffect();
+                    CheckForNewCheckPoint();
+                    if ((UiManager.instance != null))
+                        UiManager.instance.DeactivatePhantom();
+                }
             }
-            else
+            else if (inUndoMode) //Undo Mode ON
             {
                 if (canUNDO)
                 {
@@ -74,15 +99,28 @@ public class Player : MonoBehaviour
                         selectedEndPoint.isFilled = false;
                     if (LevelManager.instance != null)
                         LevelManager.instance.noOfCheckReached--;
-                    if(UiManager.instance != null)
+                    if (UiManager.instance != null)
                         UiManager.instance.UpdatePowerUpCount(1);
                 }
                 if ((UiManager.instance != null))
                     UiManager.instance.DeactivateUNDOUI();
             }
 
+            if (inEraseMode)//Erase Mode On 
+            {
+                inputWork = false;
+                move = false;
+                if (UiManager.instance != null)
+                    UiManager.instance.updateEraseCount(1);
+                eraseObj();
+            }
+
+
         }
     }
+    #endregion
+
+    #region Normal Movement CheckPoints and EndpPoints
 
     void CheckForNewCheckPoint()
     {
@@ -117,6 +155,8 @@ public class Player : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().color = EndColor;
         if (UiManager.instance != null)
             UiManager.instance.PlayHaptic();
+        if (usingPhantom)
+            DisablePhantomEffect();
         reachedCheckPointNo = 0;
     }
 
@@ -136,6 +176,8 @@ public class Player : MonoBehaviour
             }
         }
     }
+    #endregion
+
 
     #region UNDO Funtionality
     void ReverseNewCheckPoint()
@@ -172,20 +214,94 @@ public class Player : MonoBehaviour
         gameObject.GetComponent<SpriteRenderer>().color = startColor;
         if (UiManager.instance != null)
             UiManager.instance.PlayHaptic();
+        if (usingPhantom)
+            DisablePhantomEffect();
     }
 
     public void ReverseOn()
     {
+        inUndoMode = true;
         canCollide = false;
     }
 
     public void ReverseOff()
     {
+        inUndoMode = true;
         canCollide = true;
     }
 
     #endregion
 
+
+    #region Erase PowerUp
+    public void EraseOn()
+    {
+        inEraseMode = true;
+    }
+
+    public void EraseOff()
+    {
+        inEraseMode = false;
+    }
+
+    void eraseObj()
+    {
+        GameObject obj = Instantiate(eraseAnimObj, transform.position, Quaternion.identity);
+        if ((UiManager.instance != null))
+            UiManager.instance.DeactivateErasePowerUp();
+        spriteRenderer.DOFade(0, 1f).OnComplete(()=>
+        {
+            CheckForEndPoint();
+            if (LevelManager.instance != null && !canUNDO)
+                LevelManager.instance.PlayerCheckPointReached();
+            Destroy(obj);
+            if (target != null)
+                Destroy(target.gameObject);
+            Destroy(this.gameObject);
+        });
+
+    }
+    #endregion
+
+    #region Phantom Power Up
+
+    public void PhantomOn()
+    {
+        inPhaontomMode = true;
+    }
+
+    public void PhantomOff()
+    {
+        inPhaontomMode = false;
+    }
+
+    void EnablePhantomEffect()
+    {
+        usingPhantom = true;
+        collider2d.enabled = false;
+        if(lightiningEffect != null)
+        {
+            lightingRef = Instantiate(lightiningEffect,transform.position, Quaternion.identity,this.transform);
+            allPartEff = lightingRef.transform.GetComponentsInChildren<ParticleSystem>();
+            foreach (ParticleSystem _eff in allPartEff)
+            {
+                ParticleSystem.MainModule _main01 = _eff.main;
+                _main01.startColor = spriteRenderer.color;
+            }
+
+        }
+        if (UiManager.instance != null)
+            UiManager.instance.UpdatePhantomCount(1);
+    }
+
+    void DisablePhantomEffect()
+    {
+        usingPhantom = false;
+        collider2d.enabled = true;
+        if (lightingRef != null)
+            Destroy(lightingRef.gameObject);
+    }
+    #endregion
 
     #region BallShake
     public void StartShake(float duration, float magnitude)
@@ -217,7 +333,6 @@ public class Player : MonoBehaviour
     #endregion
 
 
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (failed || !canCollide)
@@ -240,11 +355,10 @@ public class Player : MonoBehaviour
                 {
                     ParticleSystem _paricle = Instantiate(BlockExplodeParticle, collision.transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
                     ParticleSystem.MainModule _main = _paricle.main;
-                    _main.startColor = GetComponent<SpriteRenderer>().color;
+                    _main.startColor = spriteRenderer.color;
                 }
                 Destroy(collision.gameObject);
             }
-
         }    
     }
 

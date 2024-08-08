@@ -26,6 +26,7 @@ public class LifeManager : MonoBehaviour
 
     void Start()
     {
+        PlayerPrefs.SetInt("CurrentLives", 10);
         currentLives = PlayerPrefs.GetInt("CurrentLives", maxLives);
         timer = PlayerPrefs.GetFloat("LifeRegenTimer", lifeRegenTime);
         UpdateUI();
