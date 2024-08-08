@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     bool usingPhantom = false;
     bool inputWork = true;
     SpriteRenderer spriteRenderer;
+    [SerializeField] GameObject phantomColliderObj;
     [SerializeField] GameObject eraseAnimObj;
     Collider2D collider2d;
     [SerializeField] GameObject lightiningEffect;
@@ -279,6 +280,8 @@ public class Player : MonoBehaviour
     {
         usingPhantom = true;
         collider2d.enabled = false;
+        if (phantomColliderObj != null)
+            phantomColliderObj.SetActive(true);
         if(lightiningEffect != null)
         {
             lightingRef = Instantiate(lightiningEffect,transform.position, Quaternion.identity,this.transform);
@@ -298,6 +301,8 @@ public class Player : MonoBehaviour
     {
         usingPhantom = false;
         collider2d.enabled = true;
+        if (phantomColliderObj != null)
+            phantomColliderObj.SetActive(false);
         if (lightingRef != null)
             Destroy(lightingRef.gameObject);
     }
@@ -350,18 +355,21 @@ public class Player : MonoBehaviour
             }
             else
             {
-
-                if (BlockExplodeParticle != null)
-                {
-                    ParticleSystem _paricle = Instantiate(BlockExplodeParticle, collision.transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
-                    ParticleSystem.MainModule _main = _paricle.main;
-                    _main.startColor = spriteRenderer.color;
-                }
+                SpawnBlockExplodeParticel(collision);
                 Destroy(collision.gameObject);
             }
         }    
     }
 
+    public void SpawnBlockExplodeParticel(Collider2D _collision)
+    {
+        if (BlockExplodeParticle != null)
+        {
+            ParticleSystem _paricle = Instantiate(BlockExplodeParticle, _collision.transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
+            ParticleSystem.MainModule _main = _paricle.main;
+            _main.startColor = spriteRenderer.color;
+        }
+    }
 
     public void LevelFailed()
     {
