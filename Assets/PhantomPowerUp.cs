@@ -16,7 +16,6 @@ public class PhantomPowerUp : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
         if (collision.CompareTag("Block"))
         {
             if (collision.GetComponent<Block>().PlayerType == playerType)

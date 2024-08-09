@@ -1845,7 +1845,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 23
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -2211,6 +2211,7 @@ MonoBehaviour:
   settingsAnimator: {fileID: 1272523046}
   hapticsToggle: {fileID: 288819423}
   darkModeToggle: {fileID: 1632175937}
+  whiteColor: {r: 0.8490566, g: 0.8490566, b: 0.8490566, a: 0}
   darkModeColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
   bgImages:
   - {fileID: 794518454}
@@ -2260,7 +2261,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 659094859}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b263d352867a2344a03005058b15511, type: 3}
   m_Name: 
@@ -2417,7 +2418,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &734897456
 RectTransform:
   m_ObjectHideFlags: 0

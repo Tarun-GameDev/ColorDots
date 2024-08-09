@@ -9,15 +9,15 @@ using static UnityEngine.ParticleSystem;
 public class Player : MonoBehaviour
 {
     [SerializeField] Transform[] checkPoints;
-    [SerializeField] int reachedCheckPointNo = 0;
-    [SerializeField] int UNDOcheckPointNo = 0;
+    int reachedCheckPointNo = 0;
+    int UNDOcheckPointNo = 0;
     [SerializeField] Transform startPoint;
     [SerializeField] EndPoint[] allEndPoint;
     [SerializeField] GameObject BlockExplodeParticle;
     EndPoint selectedEndPoint;
-    public Transform target;
+    Transform target;
     public float speed = 5f;
-    [SerializeField] bool move = false;
+    bool move = false;
     public PlayerType playerType;
     Color startColor;
     public Color EndColor;

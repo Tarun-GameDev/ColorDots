@@ -25,6 +25,7 @@ public class UiManager : MonoBehaviour
     [Header("Toggle")]
     [SerializeField] Toggle hapticsToggle;
     [SerializeField] Toggle darkModeToggle;
+    [SerializeField] Color whiteColor;
     [SerializeField] Color darkModeColor;
     [SerializeField] Image[] bgImages;
     bool inDarkMode = false;
@@ -382,10 +383,10 @@ public class UiManager : MonoBehaviour
         }
         else
         {
-            cam.backgroundColor = Color.white;
+            cam.backgroundColor = whiteColor;
             foreach (Image _image in bgImages)
             {
-                _image.color = Color.white;
+                _image.color = whiteColor;
             }
             PlayerPrefs.SetInt("DarkMode", 0);
         }

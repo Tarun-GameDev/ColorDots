@@ -30,7 +30,8 @@ public class LevelManager : MonoBehaviour
     {
         foreach (Player _player in allPlayers)
         {
-            _player.ReverseOn();
+            if(_player.isActiveAndEnabled)
+                _player.ReverseOn();
         }
     }
 
@@ -38,7 +39,8 @@ public class LevelManager : MonoBehaviour
     {
         foreach (Player _player in allPlayers)
         {
-            _player.ReverseOff();
+            if (_player.isActiveAndEnabled)
+                _player.ReverseOff();
         }
     }
     #endregion
@@ -49,7 +51,8 @@ public class LevelManager : MonoBehaviour
     {
         foreach(Player _player in allPlayers)
         {
-            _player.EraseOn();
+            if (_player.isActiveAndEnabled)
+                _player.EraseOn();
         }
     }
 
@@ -57,7 +60,8 @@ public class LevelManager : MonoBehaviour
     {
         foreach (Player _player in allPlayers)
         {
-            _player.EraseOff();
+            if (_player.isActiveAndEnabled)
+                _player.EraseOff();
         }
     }
     #endregion
@@ -67,7 +71,8 @@ public class LevelManager : MonoBehaviour
     {
         foreach (Player _player in allPlayers)
         {
-            _player.PhantomOn();
+            if (_player.isActiveAndEnabled)
+                _player.PhantomOn();
         }
     }
 
@@ -75,7 +80,8 @@ public class LevelManager : MonoBehaviour
     {
         foreach (Player _player in allPlayers)
         {
-            _player.PhantomOff();
+            if (_player.isActiveAndEnabled)
+                _player.PhantomOff();
         }
     }
     #endregion

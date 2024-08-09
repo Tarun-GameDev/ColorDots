@@ -190,9 +190,9 @@ GameObject:
   - component: {fileID: 5125535528820057469}
   - component: {fileID: 388649664560386643}
   - component: {fileID: 6337390975641617708}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: PhantomCollider
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

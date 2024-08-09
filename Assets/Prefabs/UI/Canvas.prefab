@@ -2232,7 +2232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5701569287097404102
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3544,6 +3544,7 @@ MonoBehaviour:
   settingsAnimator: {fileID: 690025992143760644}
   hapticsToggle: {fileID: 7466117506807010394}
   darkModeToggle: {fileID: 3696698593506604534}
+  whiteColor: {r: 0.8980392, g: 0.8980392, b: 0.8980392, a: 1}
   darkModeColor: {r: 0.18039216, g: 0.18039216, b: 0.18039216, a: 1}
   bgImages:
   - {fileID: 6387365256705702009}
@@ -3594,7 +3595,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2833888632018554017}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3b263d352867a2344a03005058b15511, type: 3}
   m_Name: 
