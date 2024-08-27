@@ -262,6 +262,7 @@ public class UiManager : MonoBehaviour
             HapticFeedback.LightFeedback();
         }
     }
+
     public void EnableHapticsButton(bool _enable)
     {
         enableHaptics = _enable;
